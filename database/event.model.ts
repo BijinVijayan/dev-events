@@ -30,9 +30,9 @@ const EventSchema = new Schema<IEvent>(
     },
     slug: {
       type: String,
-      unique: true,
       lowercase: true,
       trim: true,
+      // REMOVED unique: true here to avoid duplicate index!
     },
     description: {
       type: String,
@@ -181,7 +181,7 @@ function normalizeTime(timeString: string): string {
 // Create unique index on slug for better performance
 EventSchema.index({ slug: 1 }, { unique: true });
 
-// Create compound index for common queries
+// Create compound index for common queries (not unique, for performance)
 EventSchema.index({ date: 1, mode: 1 });
 
 const Event = models.Event || model<IEvent>('Event', EventSchema);
