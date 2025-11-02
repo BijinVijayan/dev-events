@@ -12,15 +12,16 @@ const Page = async () => {
   const { events } = await response.json();
 
   return (
-    <section>
-      <h1 className="text-center">
-        The Hub for Every Dev <br /> Event You Can&#39;t Miss
-      </h1>
-      <p className="text-center mt-5">Hackathons, Meetups, and Conferences, All in One Place</p>
+    <section className={'-mt-[65px]'}>
+      <div className={'container min-h-screen flex flex-col justify-center items-center'}>
+        <h1 className="text-center">
+          The Hub for Every Dev <br /> Event You Can&#39;t Miss
+        </h1>
+        <p className="text-center mt-8">Hackathons, Meetups, and Conferences, All in One Place</p>
+        <ExploreBtn />
+      </div>
 
-      <ExploreBtn />
-
-      <div className="mt-20 space-y-7">
+      <div id={'events'} className="pb-20 space-y-7">
         <h3>Featured Events</h3>
 
         <ul className="events">

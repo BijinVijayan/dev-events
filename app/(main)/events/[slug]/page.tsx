@@ -5,7 +5,7 @@ const EventDetailsPage = async ({ params }: { params: Promise<{ slug: string }> 
   const slug = params.then((p) => p.slug);
 
   return (
-    <main>
+    <main className="p-0 m-0">
       <Suspense fallback={<div>Loading...</div>}>
         <EventDetails params={slug} />
       </Suspense>

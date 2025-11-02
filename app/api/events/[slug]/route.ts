@@ -67,3 +67,57 @@ export async function GET(req: NextRequest, { params }: RouteParams): Promise<Ne
     return NextResponse.json({ message: 'An unexpected error occurred' }, { status: 500 });
   }
 }
+
+export async function DELETE(req: NextRequest, { params }: RouteParams): Promise<NextResponse> {
+  try {
+    // Connect to database
+    await connectDB();
+
+    // Await and extract slug from params
+    const { slug } = await params;
+
+    // Validate slug parameter
+    if (!slug || typeof slug !== 'string' || slug.trim() === '') {
+      return NextResponse.json({ message: 'Invalid or missing slug parameter' }, { status: 400 });
+    }
+
+    // Sanitize slug (remove any potential malicious input)
+    const sanitizedSlug = slug.trim().toLowerCase();
+
+    // Find and delete the event by slug
+    const deletedEvent = await Event.findOneAndDelete({ slug: sanitizedSlug });
+
+    // Handle event not found
+    if (!deletedEvent) {
+      return NextResponse.json(
+        { message: `Event with slug '${sanitizedSlug}' not found` },
+        { status: 404 }
+      );
+    }
+
+    // Return successful response
+    return NextResponse.json(
+      { message: 'Event deleted successfully', event: deletedEvent },
+      { status: 200 }
+    );
+  } catch (error) {
+    // Log error for debugging (only in development)
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error deleting event by slug:', error);
+    }
+
+    if (error instanceof Error) {
+      // Handle configuration errors
+      if (error.message.includes('MONGODB_URI')) {
+        return NextResponse.json({ message: 'Database configuration error' }, { status: 500 });
+      }
+
+      return NextResponse.json(
+        { message: 'Failed to delete event', error: error.message },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({ message: 'An unexpected error occurred' }, { status: 500 });
+  }
+}
